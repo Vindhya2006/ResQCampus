@@ -58,9 +58,9 @@ dependencies {
     // Google Play Services Location (FusedLocationProviderClient)
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
-    // Activity Recognition (for fall detection context)
-    implementation("com.google.android.gms:play-services-activity-recognition:18.0.1")
+    
 }
+
 
 
 
