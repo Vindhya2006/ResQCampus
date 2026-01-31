@@ -62,6 +62,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val serviceIntent = Intent(this, FallDetectionService::class.java)
         startForegroundService(serviceIntent)
+        requestPermissions(
+           arrayOf(
+               android.Manifest.permission.SEND_SMS,
+               android.Manifest.permission.ACCESS_FINE_LOCATION
+         ),
+         101
+    )
+
 
         setContent {
             ResQCampusTheme {
@@ -336,4 +344,5 @@ fun LocationCard(
         }
     }
 }
+
 
