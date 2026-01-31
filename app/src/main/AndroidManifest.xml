@@ -5,6 +5,8 @@
     <!-- Runtime permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+
 
     <!-- Optional: for foreground service if you extend to background location later -->
     <uses-feature
@@ -33,3 +35,4 @@
         </activity>
     </application>
 </manifest>
+
