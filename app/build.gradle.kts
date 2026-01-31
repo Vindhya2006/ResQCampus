@@ -59,5 +59,6 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
     // Activity Recognition (for fall detection context)
-    implementation("com.google.android.gms:play-services-activity-recognition:21.0.0")
+    implementation("com.google.android.gms:play-services-activity-recognition:20.0.0")
 }
+
