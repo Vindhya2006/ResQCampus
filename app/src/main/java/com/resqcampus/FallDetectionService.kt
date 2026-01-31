@@ -29,30 +29,59 @@ class FallDetectionService : Service(), SensorEventListener {
     override fun onCreate() {
         super.onCreate()
 
+        // Start foreground service
         createNotificationChannel()
         startForeground(1, createNotification())
 
+        // Initialize sensors
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
 
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
-        sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL)
+        // Register listeners
+        sensorManager.registerListener(
+            this,
+            accelerometer,
+            SensorManager.SENSOR_DELAY_NORMAL
+        )
+
+        sensorManager.registerListener(
+            this,
+            gyroscope,
+            SensorManager.SENSOR_DELAY_NORMAL
+        )
     }
 
     override fun onSensorChanged(event: SensorEvent) {
+
         if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
+
             val x = event.values[0]
             val y = event.values[1]
             val z = event.values[2]
 
             val magnitude = sqrt(x * x + y * y + z * z)
-            val diff = magnitude - lastMagnitude
-            lastMagnitude = magnitude
 
-            if (diff > 15) {
-                lastMagnitude = diff
+            // -----------------------------
+            // STAGE 1 — FREE FALL
+            // -----------------------------
+            if (magnitude < 2f) {
+                lastMagnitude = magnitude
+            }
+
+            // -----------------------------
+            // STAGE 2 — IMPACT
+            // -----------------------------
+            if (magnitude > 25f) {
+                lastMagnitude = magnitude
+            }
+
+            // -----------------------------
+            // STAGE 3 — STILLNESS
+            // -----------------------------
+            if (!fallDetected && lastMagnitude > 25f && magnitude < 3f && lastRotation > 1.5f) {
+                confirmFall()
             }
         }
 
@@ -63,25 +92,59 @@ class FallDetectionService : Service(), SensorEventListener {
 
             lastRotation = sqrt(rx * rx + ry * ry + rz * rz)
         }
-
-        if (!fallDetected && lastMagnitude > 10 && lastRotation > 1.5f) {
-            fallDetected = true
-            Toast.makeText(this, "🚨 FALL DETECTED", Toast.LENGTH_LONG).show()
-        }
     }
 
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        // Not needed
+    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+    // -----------------------------
+    // FALL CONFIRMATION
+    // -----------------------------
+    private fun confirmFall() {
+        fallDetected = true
+
+        Toast.makeText(
+            this,
+            "🚨 FALL CONFIRMED — Sending Alert",
+            Toast.LENGTH_LONG
+        ).show()
+
+        sendEmergencyAlert()
+    }
+
+    // -----------------------------
+    // EMERGENCY NOTIFICATION
+    // -----------------------------
+    private fun sendEmergencyAlert() {
+        val notification = NotificationCompat.Builder(this, "fall_channel")
+            .setContentTitle("🚨 EMERGENCY ALERT")
+            .setContentText("Fall detected! Location sent to emergency contact.")
+            .setSmallIcon(android.R.drawable.ic_dialog_alert)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
+
+        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.notify(2, notification)
+    }
+
+    // -----------------------------
+    // FOREGROUND NOTIFICATION
+    // -----------------------------
     private fun createNotification(): Notification {
         return NotificationCompat.Builder(this, "fall_channel")
             .setContentTitle("ResQCampus Active")
             .setContentText("Monitoring for falls in background")
             .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
     }
 
+    // -----------------------------
+    // NOTIFICATION CHANNEL
+    // -----------------------------
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
