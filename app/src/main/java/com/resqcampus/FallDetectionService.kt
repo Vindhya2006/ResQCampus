@@ -15,6 +15,7 @@ import android.os.IBinder
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import kotlin.math.sqrt
+private val emergencyNumber = "9876543210" // Replace with parent/security
 
 class FallDetectionService : Service(), SensorEventListener {
 
