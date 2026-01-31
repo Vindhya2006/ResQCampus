@@ -15,6 +15,9 @@ import android.os.IBinder
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import kotlin.math.sqrt
+import android.telephony.SmsManager
+import com.google.android.gms.location.LocationServices
+
 private val emergencyNumber = "9876543210" // Replace with parent/security
 
 class FallDetectionService : Service(), SensorEventListener {
@@ -120,15 +123,31 @@ class FallDetectionService : Service(), SensorEventListener {
     // EMERGENCY NOTIFICATION
     // -----------------------------
     private fun sendEmergencyAlert() {
-        val notification = NotificationCompat.Builder(this, "fall_channel")
-            .setContentTitle("🚨 EMERGENCY ALERT")
-            .setContentText("Fall detected! Location sent to emergency contact.")
-            .setSmallIcon(android.R.drawable.ic_dialog_alert)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .build()
+       val fusedClient = LocationServices.getFusedLocationProviderClient(this)
 
-        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        manager.notify(2, notification)
+    fusedClient.lastLocation.addOnSuccessListener { location ->
+
+        val lat = location?.latitude ?: 0.0
+        val lon = location?.longitude ?: 0.0
+
+        val mapsLink = "https://maps.google.com/?q=$lat,$lon"
+
+        val message = """
+       🚨 FALL DETECTED
+       Live Location:
+       $mapsLink
+       ResQCampus Emergency System
+        """.trimIndent()
+
+        try {
+            val sms = SmsManager.getDefault()
+            sms.sendTextMessage(emergencyNumber, null, message, null, null)
+
+            Toast.makeText(this, "📩 SMS sent to emergency contact", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "❌ SMS failed: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
     }
 
     // -----------------------------
