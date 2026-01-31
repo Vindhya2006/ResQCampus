@@ -60,6 +60,9 @@ import kotlin.math.sqrt
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val serviceIntent = Intent(this, FallDetectionService::class.java)
+        startForegroundService(serviceIntent)
+
         setContent {
             ResQCampusTheme {
                 Surface(
@@ -333,3 +336,4 @@ fun LocationCard(
         }
     }
 }
+
