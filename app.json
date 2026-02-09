@@ -2,7 +2,7 @@
   "expo": {
     "name": "ResQCampus",
     "slug": "ResQCampus",
-    "entryPoint": "./node_modules/expo-router/entry"
+    "entryPoint": "./node_modules/expo-router/entry",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
