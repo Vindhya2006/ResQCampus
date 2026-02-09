@@ -21,10 +21,6 @@
       "predictiveBackGestureEnabled": false,
       "package": "com.vindhyachoudary.ResQCampus"
     },
-    "web": {
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
     "plugins": [
       [
         "expo-splash-screen",
