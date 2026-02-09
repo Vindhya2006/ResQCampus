@@ -2,6 +2,7 @@
   "expo": {
     "name": "ResQCampus",
     "slug": "ResQCampus",
+    "entryPoint": "./node_modules/expo-router/entry"
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -19,7 +20,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.vindhyachoudary.ResQCampus"
     },
     "web": {
       "output": "static",
@@ -43,6 +45,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "89714fb1-466f-43a5-a3c5-f7653f5c600d"
+      }
     }
   }
 }
