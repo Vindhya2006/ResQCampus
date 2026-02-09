@@ -7,7 +7,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "resqcampus",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
@@ -40,12 +39,7 @@
         }
       ]
     ],
-    "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
-    },
     "extra": {
-      "router": {},
       "eas": {
         "projectId": "89714fb1-466f-43a5-a3c5-f7653f5c600d"
       }
